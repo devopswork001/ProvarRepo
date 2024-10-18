@@ -1,0 +1,34 @@
+# This workflow will build a Java project with Ant
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-ant
+
+name: Java CI
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+     BROWSER: Chrome
+     MY_LICENSE: ${{secrets.PROVAR_LICENSE}}
+     PROVAR_HOME: ${{github.workspace}}/ProvarHome
+
+    steps:
+       - name: Checkout code
+         uses: actions/checkout@v4
+         
+       - name: Download and Install Chrome          
+         uses: browser-actions/setup-chrome@v1
+         
+       - name: Run Build
+         run: |
+          sudo apt-get update && sudo apt-get upgrade
+          mkdir $GITHUB_WORKSPACE/ProvarHome
+          curl -O https://download.provartesting.com/latest/Provar_ANT_latest.zip
+          unzip -o Provar_ANT_latest.zip -d ProvarHome
+          rm Provar_ANT_latest.zip
+          mkdir -p $PROVAR_HOME/Provar/.licenses
+          cd $GITHUB_WORKSPACE/ANT
+          xvfb-run ant -f build.xml
+      
