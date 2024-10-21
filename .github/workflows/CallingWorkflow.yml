@@ -4,6 +4,6 @@ on: workflow_dispatch
   
 jobs:
   call-workflow-passing-data:
-    uses: devopswork001/ProvarRepo/.github/workflows/CLI_Execution.yml@main
+    uses: devopswork001/ProvarRepo/.github/workflows/CLI_Execution.yml@master
     secrets:
       License_key: ${{ secrets.PROVAR_LICENSE }}
