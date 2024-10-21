@@ -13,6 +13,7 @@ jobs:
      BROWSER: Chrome
      MY_LICENSE: ${{secrets.PROVAR_LICENSE}}
      PROVAR_HOME: ${{github.workspace}}/ProvarHome
+     License_loc: ${{github.workspace}}/ProvarHome/Provar/.licenses/License.properties
 
     steps:
        - name: Checkout code
@@ -29,6 +30,7 @@ jobs:
           unzip -o Provar_ANT_latest.zip -d ProvarHome
           rm Provar_ANT_latest.zip
           mkdir -p $PROVAR_HOME/Provar/.licenses
+          echo "$MY_LICENSE" >> $License_loc
           cd $GITHUB_WORKSPACE/ANT
           xvfb-run ant -f build1.xml
       
