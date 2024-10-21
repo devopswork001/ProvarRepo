@@ -1,0 +1,45 @@
+name: Provar_CLI_Execution
+# Changed 'on' to enable this workflow to be called from other workflows
+on:
+  workflow_call:
+    # Introduced 'inputs' to define parameters that can be passed when calling this workflow
+    inputs:
+        Browser:
+          description: "Browser for execution"
+          required: true
+          type: string
+        Build_Name:
+          required: true
+          type: string
+    secrets:
+     License_key :
+        description: 'A token passed from the caller workflow'
+        required: true
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest   
+    env:
+     BROWSER: ${{inputs.Browser}}
+     MY_LICENSE: ${{secrets.License_key}}
+     PROVAR_HOME: ${{github.workspace}}/ProvarHome
+     License_loc: ${{github.workspace}}/ProvarHome/Provar/.licenses/License.properties
+
+    steps:
+       - name: Checkout code
+         uses: actions/checkout@v4
+         
+       - name: Download and Install Chrome          
+         uses: browser-actions/setup-chrome@v1
+         
+       - name: Run Build
+         run: |
+          sudo apt-get update && sudo apt-get upgrade
+          mkdir $GITHUB_WORKSPACE/ProvarHome
+          curl -O https://download.provartesting.com/latest/Provar_ANT_latest.zip
+          unzip -o Provar_ANT_latest.zip -d ProvarHome
+          rm Provar_ANT_latest.zip
+          mkdir -p $PROVAR_HOME/Provar/.licenses
+          echo "$MY_LICENSE" >> $License_loc
+          cd $GITHUB_WORKSPACE/ANT
+          xvfb-run ant -f ${{inputs.Build_Name}}.xml
