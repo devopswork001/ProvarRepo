@@ -1,0 +1,12 @@
+name: Call a reusable workflow
+
+on: workflow_dispatch
+  
+jobs:
+  call-workflow-passing-data:
+    uses: devopswork001/ProvarRepo/.github/workflows/CLI_Execution.yml@master
+    with:
+      Browser: Chrome
+      Build_Name: build1
+    secrets:
+      License_key: ${{ secrets.PROVAR_LICENSE }}
